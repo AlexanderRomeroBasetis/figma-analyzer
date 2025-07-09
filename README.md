@@ -24,6 +24,10 @@ src/
 │   ├── styles.interface.ts        # Style and paint interfaces
 │   ├── file.interface.ts          # File response interfaces
 │   └── user.interface.ts          # User data interfaces
+├── front/                         # React frontend implementation
+│   ├── src/components/            # React components
+│   ├── package.json               # Frontend dependencies
+│   └── README.md                  # Frontend documentation
 └── json-data/                     # Exported JSON data
     └── figma-file-*.json          # Figma file data
 ```
@@ -73,6 +77,22 @@ FRONTEND_URL=http://localhost:5173/
 - `npm test` - Run API tests
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm run dev` - Development mode
+- `npm run front` - Start React frontend development server
+- `npm run front:build` - Build React frontend for production
+
+### React Frontend
+
+Start the React application that implements the Figma designs:
+
+```bash
+npm run front
+```
+
+This will:
+- Start a development server at http://localhost:5173/
+- Show interactive views of Desktop, Tablet, and Mobile designs
+- Use exact colors, typography, and positioning from Figma
+- Allow switching between different device views
 
 ### Connection Testing
 

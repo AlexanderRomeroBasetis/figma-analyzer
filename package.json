@@ -9,7 +9,9 @@
     "test": "node --import ./register.mjs src/figma-api-test.ts",
     "inspect": "node --import ./register.mjs src/figma-json-inspector.ts",
     "build": "tsc",
-    "dev": "node --import ./register.mjs src/figma-connection-checker.ts"
+    "dev": "node --import ./register.mjs src/figma-connection-checker.ts",
+    "front": "cd src/front && npm run dev",
+    "front:build": "cd src/front && npm run build"
   },
   "keywords": ["figma", "api", "typescript", "analyzer"],
   "author": "",
