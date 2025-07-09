@@ -1,8 +1,8 @@
 /**
- * Interfaces básicas y tipos comunes de Figma
+ * Basic interfaces and common Figma types
  */
 
-// Tipos de nodos en Figma
+// Figma node types
 export type FigmaNodeType = 
     | 'DOCUMENT' 
     | 'CANVAS' 
@@ -19,10 +19,10 @@ export type FigmaNodeType =
     | 'COMPONENT_SET' 
     | 'INSTANCE';
 
-// Tipos de scroll behavior
+// Scroll behavior types
 export type ScrollBehavior = 'SCROLLS' | 'FIXED';
 
-// Tipos de blend mode
+// Blend mode types
 export type BlendMode = 
     | 'PASS_THROUGH' 
     | 'NORMAL' 
@@ -44,18 +44,18 @@ export type BlendMode =
     | 'COLOR' 
     | 'LUMINOSITY';
 
-// Tipos de alineación de stroke
+// Stroke alignment types
 export type StrokeAlign = 'INSIDE' | 'OUTSIDE' | 'CENTER';
 
-// Tipos de constraints
+// Constraint types
 export type ConstraintType = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'SCALE';
 
-// Tipos de layout
+// Layout types
 export type LayoutMode = 'NONE' | 'HORIZONTAL' | 'VERTICAL';
 export type LayoutAlign = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'INHERIT';
 export type LayoutSizing = 'FIXED' | 'HUG' | 'FILL';
 
-// Estructura básica de color RGBA
+// Basic RGBA color structure
 export interface RGBA {
     r: number; // 0-1
     g: number; // 0-1
@@ -63,7 +63,7 @@ export interface RGBA {
     a: number; // 0-1
 }
 
-// Estructura de posición y tamaño
+// Position and size structure
 export interface Rectangle {
     x: number;
     y: number;
@@ -71,7 +71,7 @@ export interface Rectangle {
     height: number;
 }
 
-// Constraints de posicionamiento
+// Positioning constraints
 export interface LayoutConstraint {
     vertical: ConstraintType;
     horizontal: ConstraintType;

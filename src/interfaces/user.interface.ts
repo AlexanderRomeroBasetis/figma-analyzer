@@ -1,6 +1,6 @@
 /**
- * Interfaces para las respuestas de la API de Figma
- * Basadas en la estructura JSON obtenida del endpoint /v1/me
+ * Interfaces for Figma API responses
+ * Based on JSON structure obtained from the /v1/me endpoint
  */
 
 export interface FigmaUser {

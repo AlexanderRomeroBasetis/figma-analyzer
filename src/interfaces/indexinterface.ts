@@ -6,22 +6,22 @@
  * obtenida de los endpoints de la API.
  */
 
-// Exportar interfaces de usuario
+// Export user interfaces
 export * from './user.interface.js';
 
-// Exportar tipos y interfaces comunes
+// Export common types and interfaces
 export * from './common.interface.js';
 
-// Exportar interfaces de estilos
+// Export style interfaces
 export * from './styles.interface.js';
 
-// Exportar interfaces de nodos
+// Export node interfaces
 export * from './nodes.interface.js';
 
-// Exportar interfaces de archivos
+// Export file interfaces
 export * from './file.interface.js';
 
-// Re-exportar los tipos más utilizados para fácil acceso
+// Re-export most commonly used types for easy access
 export type { 
     FigmaUser,
     FigmaUserResponse 

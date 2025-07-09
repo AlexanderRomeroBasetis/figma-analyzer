@@ -40,9 +40,9 @@ import {
     FigmaNode, 
     TextNode, 
     RGBA 
-} from './figma-response/index.js';
+} from './indexinterface.js';
 
-// Usar las interfaces con datos de Figma
+// Use interfaces with Figma data
 const fileData: FigmaFileResponse = await getFigmaFile();
 const textNodes: TextNode[] = findTextNodes(fileData.document);
 ```

@@ -1,10 +1,10 @@
 import { RGBA, BlendMode } from './common.interface.js';
 
 /**
- * Interfaces para estilos y rellenos de Figma
+ * Interfaces for Figma styles and fills
  */
 
-// Tipos de relleno
+// Fill types
 export type PaintType = 
     | 'SOLID' 
     | 'GRADIENT_LINEAR' 
@@ -14,7 +14,7 @@ export type PaintType =
     | 'IMAGE' 
     | 'EMOJI';
 
-// Estructura básica de paint/relleno
+// Basic paint/fill structure
 export interface Paint {
     blendMode: BlendMode;
     type: PaintType;

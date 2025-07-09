@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 
-// Cargar variables de entorno
+// Load environment variables
 dotenv.config();
 
 export class FigmaJsonInspector {
@@ -16,7 +16,7 @@ export class FigmaJsonInspector {
      * Inspecciona la respuesta de la API /v1/me
      */
     async inspectUserEndpoint(): Promise<void> {
-        console.log('🔍 Inspeccionando /v1/me endpoint...\n');
+        console.log('🔍 Inspecting /v1/me endpoint...\n');
 
         try {
             const response = await fetch(`${this.baseUrl}/v1/me`, {
@@ -37,7 +37,7 @@ export class FigmaJsonInspector {
                 console.log(JSON.stringify(data, null, 2));
                 console.log('================\n');
 
-                // Análisis de la estructura
+                // Structure analysis
                 this.analyzeStructure(data, '/v1/me');
             } else {
                 const errorData = await response.text();
@@ -57,21 +57,21 @@ export class FigmaJsonInspector {
         const projectUrl = process.env.PROJECT_URL;
         
         if (!projectUrl) {
-            console.log('⚠️  PROJECT_URL no está configurado, saltando inspección de archivo');
+            console.log('⚠️  PROJECT_URL is not configured, skipping file inspection');
             return;
         }
 
-        // Extraer el file key de la URL (soporta tanto /file/ como /design/)
+        // Extract the file key from the URL (supports both /file/ and /design/)
         const fileKeyMatch = projectUrl.match(/(?:file|design)\/([a-zA-Z0-9]+)/);
         if (!fileKeyMatch) {
-            console.log('❌ No se pudo extraer el file key de PROJECT_URL');
-            console.log(`   URL actual: ${projectUrl}`);
-            console.log('   Formato esperado: https://www.figma.com/file/ABC123... o https://www.figma.com/design/ABC123...');
+            console.log('❌ Could not extract file key from PROJECT_URL');
+            console.log(`   Current URL: ${projectUrl}`);
+            console.log('   Expected format: https://www.figma.com/file/ABC123... or https://www.figma.com/design/ABC123...');
             return;
         }
 
         const fileKey = fileKeyMatch[1];
-        console.log(`\n🔍 Inspeccionando archivo: ${fileKey}...\n`);
+        console.log(`\n🔍 Inspecting file: ${fileKey}...\n`);
 
         try {
             const response = await fetch(`${this.baseUrl}/v1/files/${fileKey}`, {
@@ -86,16 +86,16 @@ export class FigmaJsonInspector {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('\n📄 File JSON Response (primeros 500 caracteres):');
+                console.log('\n📄 File JSON Response (first 500 characters):');
                 console.log('==============================================');
                 const jsonString = JSON.stringify(data, null, 2);
                 console.log(jsonString.substring(0, 500) + '...');
                 console.log('==============================================\n');
 
-                // Análisis de la estructura del archivo
+                // File structure analysis
                 this.analyzeStructure(data, `/v1/files/${fileKey}`);
 
-                // Guardar respuesta completa en archivo
+                // Save complete response to file
                 await this.saveJsonToFile(data, `figma-file-${fileKey}.json`);
             } else {
                 const errorData = await response.text();
@@ -115,23 +115,23 @@ export class FigmaJsonInspector {
         const projectUrl = process.env.PROJECT_URL;
         
         if (!projectUrl) {
-            console.log('⚠️  PROJECT_URL no está configurado, saltando inspección de nodos');
+            console.log('⚠️  PROJECT_URL is not configured, skipping node inspection');
             return;
         }
 
         const fileKeyMatch = projectUrl.match(/(?:file|design)\/([a-zA-Z0-9]+)/);
         if (!fileKeyMatch) {
-            console.log('❌ No se pudo extraer el file key de PROJECT_URL');
+            console.log('❌ Could not extract file key from PROJECT_URL');
             return;
         }
 
         const fileKey = fileKeyMatch[1];
         
-        // Primero obtener la información del archivo para encontrar nodos
-        console.log(`\n🔍 Obteniendo nodos del archivo: ${fileKey}...\n`);
+        // First get the file information to find nodes
+        console.log(`\n🔍 Getting nodes from file: ${fileKey}...\n`);
 
         try {
-            // Obtener estructura del archivo primero
+            // Get file structure first
             const fileResponse = await fetch(`${this.baseUrl}/v1/files/${fileKey}`, {
                 method: 'GET',
                 headers: {
@@ -143,11 +143,11 @@ export class FigmaJsonInspector {
             if (fileResponse.ok) {
                 const fileData = await fileResponse.json();
                 
-                // Extraer algunos IDs de nodos para la demo
-                const nodeIds = this.extractNodeIds(fileData, 3); // Obtener hasta 3 nodos
+                // Extract some node IDs for the demo
+                const nodeIds = this.extractNodeIds(fileData, 3); // Get up to 3 nodes
                 
                 if (nodeIds.length > 0) {
-                    console.log(`📋 Nodos encontrados: ${nodeIds.join(', ')}`);
+                    console.log(`📋 Nodes found: ${nodeIds.join(', ')}`);
                     
                     const nodesResponse = await fetch(`${this.baseUrl}/v1/files/${fileKey}/nodes?ids=${nodeIds.join(',')}`, {
                         method: 'GET',
@@ -169,7 +169,7 @@ export class FigmaJsonInspector {
                         this.analyzeStructure(nodesData, `/v1/files/${fileKey}/nodes`);
                     }
                 } else {
-                    console.log('⚠️  No se encontraron nodos en el archivo');
+                    console.log('⚠️  No nodes found in the file');
                 }
             }
 
@@ -210,13 +210,13 @@ export class FigmaJsonInspector {
      * Analiza la estructura del JSON y muestra información útil
      */
     private analyzeStructure(data: any, endpoint: string): void {
-        console.log(`🔬 Análisis de estructura para ${endpoint}:`);
+        console.log(`🔬 Structure analysis for ${endpoint}:`);
         console.log('─'.repeat(50));
 
         if (typeof data === 'object' && data !== null) {
-            console.log(`📋 Propiedades principales: ${Object.keys(data).join(', ')}`);
+            console.log(`📋 Main properties: ${Object.keys(data).join(', ')}`);
             
-            // Análisis específico por endpoint
+            // Specific analysis by endpoint
             if (endpoint === '/v1/me') {
                 this.analyzeUserData(data);
             } else if (endpoint.includes('/v1/files/')) {
@@ -231,7 +231,7 @@ export class FigmaJsonInspector {
      * Analiza los datos del usuario
      */
     private analyzeUserData(data: any): void {
-        console.log('\n👤 Datos del usuario:');
+        console.log('\n👤 User data:');
         if (data.id) console.log(`   🆔 ID: ${data.id}`);
         if (data.email) console.log(`   📧 Email: ${data.email}`);
         if (data.handle) console.log(`   🏷️  Handle: ${data.handle}`);
@@ -242,16 +242,16 @@ export class FigmaJsonInspector {
      * Analiza los datos del archivo
      */
     private analyzeFileData(data: any): void {
-        console.log('\n📁 Datos del archivo:');
-        if (data.name) console.log(`   📝 Nombre: ${data.name}`);
-        if (data.role) console.log(`   👥 Rol: ${data.role}`);
-        if (data.lastModified) console.log(`   📅 Última modificación: ${data.lastModified}`);
-        if (data.version) console.log(`   🔢 Versión: ${data.version}`);
+        console.log('\n📁 File data:');
+        if (data.name) console.log(`   📝 Name: ${data.name}`);
+        if (data.role) console.log(`   👥 Role: ${data.role}`);
+        if (data.lastModified) console.log(`   📅 Last modified: ${data.lastModified}`);
+        if (data.version) console.log(`   🔢 Version: ${data.version}`);
         
         if (data.document) {
-            console.log('   📄 Documento encontrado');
+            console.log('   📄 Document found');
             if (data.document.children) {
-                console.log(`   📊 Páginas: ${data.document.children.length}`);
+                console.log(`   📊 Pages: ${data.document.children.length}`);
             }
         }
     }
@@ -264,19 +264,19 @@ export class FigmaJsonInspector {
             const fs = await import('fs');
             const path = await import('path');
             
-            // Guardar en src/json-data/ en lugar del directorio raíz
+            // Save to src/json-data/ instead of root directory
             const outputPath = path.join(process.cwd(), 'src', 'json-data', filename);
             
-            // Crear directorio si no existe
+            // Create directory if it doesn't exist
             const dir = path.dirname(outputPath);
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true });
             }
             
             fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
-            console.log(`💾 JSON guardado en: ${outputPath}`);
+            console.log(`💾 JSON saved to: ${outputPath}`);
         } catch (error) {
-            console.log('⚠️  No se pudo guardar el archivo JSON:', error);
+            console.log('⚠️  Could not save JSON file:', error);
         }
     }
 
@@ -288,7 +288,7 @@ export class FigmaJsonInspector {
         console.log('========================\n');
 
         if (!this.token) {
-            console.log('❌ TOKEN no está configurado');
+            console.log('❌ TOKEN is not configured');
             return;
         }
 
@@ -296,18 +296,18 @@ export class FigmaJsonInspector {
         await this.inspectFileEndpoint();
         await this.inspectNodesEndpoint();
 
-        console.log('\n✅ Inspección completada');
+        console.log('\n✅ Inspection completed');
         console.log('========================');
     }
 }
 
-// Función principal
+// Main function
 async function main() {
     const inspector = new FigmaJsonInspector();
     await inspector.runAllInspections();
 }
 
-// Ejecutar si el archivo se ejecuta directamente
+// Run if the file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     main().catch(console.error);
 }

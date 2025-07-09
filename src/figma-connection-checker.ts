@@ -1,19 +1,8 @@
 import * as dotenv from 'dotenv';
+import { FigmaUser, FigmaUserResponse } from './interfaces/indexinterface.js';
 
-// Cargar variables de entorno
+// Load environment variables
 dotenv.config();
-
-interface FigmaUser {
-    id: string;
-    email: string;
-    handle: string;
-    img_url: string;
-}
-
-interface FigmaApiResponse {
-    user?: FigmaUser;
-    error?: string;
-}
 
 export class FigmaConnectionChecker {
     private readonly token: string;
@@ -25,10 +14,10 @@ export class FigmaConnectionChecker {
     }
 
     /**
-     * Valida que las variables de entorno necesarias estén configuradas
+     * Validates that the necessary environment variables are configured
      */
     private validateEnvironment(): boolean {
-        console.log('🔍 Verificando configuración...');
+        console.log('🔍 Checking configuration...');
         
         const checks = [
             { name: 'BASE_URL', value: this.baseUrl, required: true },
@@ -41,12 +30,12 @@ export class FigmaConnectionChecker {
 
         checks.forEach(check => {
             if (check.required && !check.value) {
-                console.log(`❌ ${check.name} no está configurado (requerido)`);
+                console.log(`❌ ${check.name} is not configured (required)`);
                 allValid = false;
             } else if (check.value) {
-                console.log(`✅ ${check.name} configurado correctamente`);
+                console.log(`✅ ${check.name} configured correctly`);
             } else {
-                console.log(`⚠️  ${check.name} no está configurado (opcional)`);
+                console.log(`⚠️  ${check.name} is not configured (optional)`);
             }
         });
 
@@ -54,19 +43,19 @@ export class FigmaConnectionChecker {
     }
 
     /**
-     * Realiza una petición de prueba a la API de Figma para verificar la conexión
+     * Makes a test request to the Figma API to verify the connection
      */
     async checkConnection(): Promise<boolean> {
-        console.log('\n🚀 Iniciando prueba de conexión a Figma API...\n');
+        console.log('\n🚀 Starting Figma API connection test...\n');
 
-        // Validar configuración antes de hacer la petición
+        // Validate configuration before making the request
         if (!this.validateEnvironment()) {
-            console.log('\n❌ Configuración incompleta. No se puede continuar.');
+            console.log('\n❌ Incomplete configuration. Cannot continue.');
             return false;
         }
 
         try {
-            console.log('\n📡 Conectando a Figma API...');
+            console.log('\n📡 Connecting to Figma API...');
             
             const response = await fetch(`${this.baseUrl}/v1/me`, {
                 method: 'GET',
@@ -76,13 +65,13 @@ export class FigmaConnectionChecker {
                 }
             });
 
-            console.log(`📊 Código de respuesta: ${response.status}`);
+            console.log(`📊 Response code: ${response.status}`);
 
             if (response.status === 200) {
-                const data = await response.json() as FigmaApiResponse;
+                const data = await response.json() as FigmaUserResponse;
                 
-                console.log('✅ ¡Conexión exitosa!');
-                console.log('\n👤 Información del usuario:');
+                console.log('✅ Connection successful!');
+                console.log('\n👤 User information:');
                 
                 if (data.user) {
                     console.log(`   📧 Email: ${data.user.email}`);
@@ -93,14 +82,14 @@ export class FigmaConnectionChecker {
 
                 return true;
             } else {
-                console.log('❌ Error en la conexión');
+                console.log('❌ Connection error');
                 
                 try {
                     const errorData = await response.json() as any;
-                    console.log(`   Error: ${errorData.error || 'Error desconocido'}`);
+                    console.log(`   Error: ${errorData.error || 'Unknown error'}`);
                 } catch {
                     const errorText = await response.text();
-                    console.log(`   Error: ${errorText || 'Error desconocido'}`);
+                    console.log(`   Error: ${errorText || 'Unknown error'}`);
                 }
 
                 this.suggestSolutions(response.status);
@@ -108,54 +97,54 @@ export class FigmaConnectionChecker {
             }
 
         } catch (error) {
-            console.log('❌ Error de conexión:', error);
-            console.log('\n💡 Posibles soluciones:');
-            console.log('   - Verificar conexión a internet');
-            console.log('   - Comprobar que la URL base sea correcta');
-            console.log('   - Verificar configuración de proxy/firewall');
+            console.log('❌ Connection error:', error);
+            console.log('\n💡 Possible solutions:');
+            console.log('   - Check internet connection');
+            console.log('   - Verify that the base URL is correct');
+            console.log('   - Check proxy/firewall configuration');
             
             return false;
         }
     }
 
     /**
-     * Sugiere soluciones basadas en el código de error HTTP
+     * Suggests solutions based on the HTTP error code
      */
     private suggestSolutions(statusCode: number): void {
-        console.log('\n💡 Posibles soluciones:');
+        console.log('\n💡 Possible solutions:');
         
         switch (statusCode) {
             case 401:
-                console.log('   - Verificar que el token de Figma sea válido');
-                console.log('   - Comprobar que el token no haya expirado');
-                console.log('   - Regenerar el token en la configuración de Figma');
+                console.log('   - Verify that the Figma token is valid');
+                console.log('   - Check that the token has not expired');
+                console.log('   - Regenerate the token in Figma settings');
                 break;
             case 403:
-                console.log('   - Verificar permisos del token');
-                console.log('   - Comprobar que el token tenga acceso al recurso');
+                console.log('   - Verify token permissions');
+                console.log('   - Check that the token has access to the resource');
                 break;
             case 404:
-                console.log('   - Verificar que la URL base sea correcta');
-                console.log('   - Comprobar el endpoint de la API');
+                console.log('   - Verify that the base URL is correct');
+                console.log('   - Check the API endpoint');
                 break;
             case 429:
-                console.log('   - Límite de rate limiting alcanzado');
-                console.log('   - Esperar antes de hacer otra petición');
+                console.log('   - Rate limiting reached');
+                console.log('   - Wait before making another request');
                 break;
             case 500:
             case 502:
             case 503:
-                console.log('   - Error del servidor de Figma');
-                console.log('   - Intentar más tarde');
+                console.log('   - Figma server error');
+                console.log('   - Try again later');
                 break;
             default:
-                console.log('   - Revisar documentación de la API de Figma');
-                console.log('   - Verificar configuración del token');
+                console.log('   - Review Figma API documentation');
+                console.log('   - Verify token configuration');
         }
     }
 
     /**
-     * Ejecuta todas las verificaciones de conexión
+     * Runs all connection checks
      */
     async runAllChecks(): Promise<void> {
         console.log('🔧 Figma Connection Checker');
@@ -163,20 +152,20 @@ export class FigmaConnectionChecker {
 
         const isConnected = await this.checkConnection();
 
-        console.log('\n📋 Resumen:');
-        console.log(`   Estado de conexión: ${isConnected ? '✅ CONECTADO' : '❌ ERROR'}`);
+        console.log('\n📋 Summary:');
+        console.log(`   Connection status: ${isConnected ? '✅ CONNECTED' : '❌ ERROR'}`);
         console.log(`   Timestamp: ${new Date().toISOString()}`);
         console.log('\n==========================');
     }
 }
 
-// Función principal para ejecutar las pruebas
+// Main function to run the tests
 async function main() {
     const checker = new FigmaConnectionChecker();
     await checker.runAllChecks();
 }
 
-// Ejecutar si el archivo se ejecuta directamente
+// Run if the file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     main().catch(console.error);
 }
